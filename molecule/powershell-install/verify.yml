@@ -1,6 +1,4 @@
 ---
-# This is an example playbook to execute Ansible tests.
-
 - name: Verify
   hosts: all
   tasks:
@@ -10,4 +8,4 @@
 
   - name: Verify PowerShell is installed
     ansible.builtin.assert:
-      that: powershell in ansible_facts['packages']
+      that: ansible_facts['packages']['powershell'] is defined

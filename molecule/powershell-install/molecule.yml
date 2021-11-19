@@ -13,6 +13,8 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
 provisioner:
   name: ansible
+  options:
+    vvv: true
 verifier:
   name: ansible
 lint: |

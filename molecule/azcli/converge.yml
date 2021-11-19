@@ -1,8 +1,7 @@
 ---
 - name: Converge
   hosts: all
-  gather_facts: true
   tasks:
     - name: "Include linux"
       include_role:
-        name: "grumpy_penguin.linux.powershell"
+        name: "linux"

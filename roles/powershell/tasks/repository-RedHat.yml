@@ -7,7 +7,8 @@
   ansible.builtin.yum_repository:
     state: present
     name: packages-microsoft-com-prod
-    baseurl: https://packages.microsoft.com/rhel/ansible_facts['distribution_major_version']/prod/
+    baseurl: "https://packages.microsoft.com/rhel/{{ ansible_facts['distribution_major_version'] }}/prod/"
     enabled: true
     gpgcheck: true
     gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    description: Microsoft Product Repository
