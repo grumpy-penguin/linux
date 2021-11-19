@@ -1,0 +1,10 @@
+---
+# tasks file for powershell
+- name: Import OS Tasks for Repository Configuration
+  ansible.builtin.import_tasks:
+    free-form: "{{ ansible_facts['os_family']-repository.yml }}"
+
+- name: Install the PowerShell Package
+  ansible.builtin.package:
+    state: present
+    name: powershell
