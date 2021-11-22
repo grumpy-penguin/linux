@@ -47,6 +47,7 @@ jobs:
           - { "distro":"ubuntu1804"}
           - { "distro":"ubuntu2004" }
           - { "distro":"debian10" }
+          - { "distro":"ubi8" }
         collection_role:
           - powershell-install
     steps:

@@ -1,0 +1,14 @@
+- name: Import RPM Key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://packages.microsoft.com/keys/microsoft.asc
+
+- name: Configure Microsoft Package Repository - Azure-CLI
+  ansible.builtin.yum_repository:
+    state: present
+    name: packages-microsoft-com-azure-cli
+    baseurl: "https://packages.microsoft.com/yumrepos/azure-cli"
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    description: Microsoft Product Repository

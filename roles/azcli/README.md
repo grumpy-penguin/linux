@@ -1,3 +1,5 @@
+[![Molecule azcli](https://github.com/grumpy-penguin/linux/actions/workflows/azcli-install.yml/badge.svg)](https://github.com/grumpy-penguin/linux/actions/workflows/azcli-install.yml)
+
 Role Name
 =========
 

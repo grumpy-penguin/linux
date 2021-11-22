@@ -1,2 +1,29 @@
 ---
 # tasks file for docker
+- name: Import OS Tasks for Repository Configuration
+  ansible.builtin.include_tasks: "repository-{{ ansible_os_family }}.yml"
+
+- name: Install the Azure CLI Package
+  ansible.builtin.package:
+    state: present
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+
+- name: Add Docker Group
+  ansible.builtin.group:
+    state: present
+    name: docker
+
+- name: Enable the Docker service
+  ansible.builtin.service:
+    state: started
+    enabled: true
+    name: docker
+
+- name: Enable the Containerd runtime service
+  ansible.builtin.service:
+    state: started
+    enabled: true
+    name: containerd

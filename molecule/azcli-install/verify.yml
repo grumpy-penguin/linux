@@ -9,4 +9,4 @@
   - name: Verify Docker packages are installed
     ansible.builtin.assert:
       that:
-        - ansible_facts['packages']['az-cli'] is defined
+        - ansible_facts['packages']['azure-cli'] is defined

@@ -1,2 +1,9 @@
 ---
 # tasks file for azcli
+- name: Import OS Tasks for Repository Configuration
+  ansible.builtin.include_tasks: "repository-{{ ansible_os_family }}.yml"
+
+- name: Install the Azure CLI Package
+  ansible.builtin.package:
+    state: present
+    name: azure-cli

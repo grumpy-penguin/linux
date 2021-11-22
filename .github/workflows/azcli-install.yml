@@ -44,9 +44,10 @@ jobs:
         molecule_distro:
           - { "distro":"centos7" }
           - { "distro":"centos8" }
-          - { "distro":"ubuntu1804"}
+          - { "distro":"ubuntu1804" }
           - { "distro":"ubuntu2004" }
           - { "distro":"debian10" }
+          - { "distro":"ubi8" }
         collection_role:
           - azcli-install
     steps:

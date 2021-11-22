@@ -4,4 +4,4 @@
   tasks:
     - name: "Include linux"
       include_role:
-        name: "grumpy_penuin.linux.azcli"
+        name: "grumpy_penguin.linux.azcli"
