@@ -1,0 +1,73 @@
+name: "Molecule Docker-Install"
+on:
+  push:
+    paths:
+      - 'roles/docker/**'
+      - 'molecule/docker-install/**'
+      - '.github/workflows/docker-install.yml'
+  pull_request_target:
+    paths:
+      - 'roles/docker/**'
+      - 'molecule/docker-install/**'
+      - '.github/workflows/docker-install.yml'
+jobs:
+  yamllint:
+    name: Verify yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+      - name: Run yaml-lint
+        uses: ibiqlik/action-yamllint@v1
+        with:
+          file_or_dir: 'roles/docker/**/*.yml'
+
+  ansible_lint:
+    name: Verify Ansible Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ansible/ansible-lint-action@master
+      with:
+        targets: roles/docker
+
+  molecule:
+    runs-on: ubuntu-18.04
+    env:
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+    strategy:
+      fail-fast: false
+      matrix:
+        molecule_distro:
+          - { "distro":"centos7" }
+          - { "distro":"centos8" }
+          - { "distro":"ubuntu1804"}
+          - { "distro":"ubuntu2004" }
+          - { "distro":"debian10" }
+        collection_role:
+          - docker-install
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt install apt-transport-https ca-certificates curl software-properties-common
+          python -m pip install --upgrade pip
+          pip install ansible==2.10.7 molecule[docker,lint,ansible] yamllint ansible-lint
+      - name: Build/Install the collection
+        run: |
+          collection_file=$( basename $(ansible-galaxy collection build -f | awk -F" " '{print $NF}'))
+          ansible-galaxy collection install $collection_file
+      - name: Run role tests
+        run: >-
+          molecule --version &&
+          ansible --version &&
+          MOLECULE_DISTRO=${{ matrix.molecule_distro.distro }}
+          molecule --debug test -s ${{ matrix.collection_role }} -- -v

@@ -1,10 +1,14 @@
 ---
-# This is an example playbook to execute Ansible tests.
-
 - name: Verify
   hosts: all
-  gather_facts: false
   tasks:
-  - name: Example assertion
-    assert:
-      that: true
+  - name: Get list of installed packages
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Verify Docker packages are installed
+    ansible.builtin.assert:
+      that:
+        - ansible_facts['packages']['docker-ce'] is defined
+        - ansible_facts['packages']['docker-ce-cli'] is defined
+        - ansible_facts['packages']['containerd.io'] is defined

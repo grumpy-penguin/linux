@@ -5,7 +5,8 @@
 
 - name: Add Microsoft Package Repository
   ansible.builtin.apt:
-    deb: "https://packages.microsoft.com/config/{{ ansible_facts['distribution'] | lower }}/{{ ansible_facts['distribution_version'] }}/packages-microsoft-prod.deb"
+    deb: |
+      "https://packages.microsoft.com/config/{{ ansible_facts['distribution']|lower }}/{{ ansible_facts['distribution_version'] }}/packages-microsoft-prod.deb"
 
 - name: Update the repository cache
   ansible.builtin.apt:
