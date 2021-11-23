@@ -3,10 +3,16 @@
     state: present
     url: https://packages.microsoft.com/keys/microsoft.asc
 
-- name: Add Microsoft Package Repository
-  ansible.builtin.apt:
-    deb: |
-      "https://packages.microsoft.com/config/{{ ansible_facts['distribution']|lower }}/{{ ansible_facts['distribution_version'] }}/packages-microsoft-prod.deb"
+- name: Add Microsoft Prod Repository
+  ansible.builtin.apt_repository:
+    state: present
+    repo: "deb [arch=amd64] https://packages.microsoft.com/{{ ansible_facts['distribution']|lower }}/{{ ansible_facts['distribution_version'] }}/prod {{ ansible_facts['distribution_release'] }} main" # noqa 204
+    update_cache: true
+
+# - name: Add Microsoft Package Repository
+  # ansible.builtin.apt:
+    # deb: |
+      # "https://packages.microsoft.com/config/{{ ansible_facts['distribution']|lower }}/{{ ansible_facts['distribution_version'] }}/packages-microsoft-prod.deb"
 
 - name: Update the repository cache
   ansible.builtin.apt:

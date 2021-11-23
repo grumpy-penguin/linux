@@ -1,3 +1,5 @@
+[![Molecule PowerShell](https://github.com/grumpy-penguin/linux/actions/workflows/powershell_install.yml/badge.svg)](https://github.com/grumpy-penguin/linux/actions/workflows/powershell_install.yml)
+
 Role Name
 =========
 
