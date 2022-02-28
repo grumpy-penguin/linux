@@ -1,0 +1,9 @@
+---
+# tasks file for packer
+- name: Import OS Tasks for Repository Configuration
+  ansible.builtin.include_tasks: "repository-{{ ansible_os_family }}.yml"
+
+- name: Install the Packer
+  ansible.builtin.package:
+    state: present
+    name: packer

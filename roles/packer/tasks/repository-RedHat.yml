@@ -1,0 +1,14 @@
+- name: Import RPM Key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://rpm.releases.hashicorp.com/gpg
+
+- name: Configure Hashicorp Package Repository
+  ansible.builtin.yum_repository:
+    state: present
+    name: packages-hashicorp
+    baseurl: "https://rpm.releases.hashicorp.com/RHEL/{{ ansible_facts['distribution_major_version'] }}/{{ ansible_facts['architecture'] }}/stable"
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://rpm.releases.hashicorp.com/gpg
+    description: Hashicorp Package Repository
