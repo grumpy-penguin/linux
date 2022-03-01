@@ -1,0 +1,8 @@
+---
+# defaults file for azure-compute-baseline
+azure_compute_baseline_filesystem_config:
+  - tmp:
+      secure: True
+      nodev: True
+      nosuid: True
+      noexec: True

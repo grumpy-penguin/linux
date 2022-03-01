@@ -1,0 +1,58 @@
+- name: Pre-lim Block
+  block:
+    - name: Get list of mount points
+      ansible.builtin.set_fact:
+        mount_names: "{{ ansible_mounts | map(attribute='mount') | list }}"
+
+    - name: Is /tmp mounted by systemd service
+      ansible.builtin.set_fact:
+        tmp_systemd: True
+      when:
+        - ansible_facts['services']['tmp.mount']['state'] == "started"
+
+- name: Ensure /tmp is a configured file system
+  block:
+    - name: Ensure /tmp is configured as a mount point
+      assert:
+        that: required_mount in mount_names
+
+    - name: Set the tmp_mount fact
+      ansible.builtin.set_fact:
+        tmp_mount: True
+  rescue:
+    - name: Set the tmp_mount fact
+      ansible.builtin.set_fact:
+        tmp_mount: False
+  vars:
+    required_mount: '/tmp'
+  when:
+    - azure_compute_baseline_filesystem_config['tmp']['secure']
+
+- name: Ensure /tmp mount options are enforced
+  block:
+    - name: Use fstab to apply options
+      ansible.posix.mount:
+        state: present
+        path: /tmp
+        src: "{{ filesystem['device'] }}"
+        fstype: "{{ filesystem['fstype'] }}"
+        opts: defaults,{% if azure_compute_baseline_filesystem_config['tmp']['noexec'] %}noexec,{% endif %}{% if azure_compute_baseline_filesystem_config['tmp']['nodev'] %}nodev,{% endif %}{% if azure_compute_baseline_filesystem_config['tmp']['nosuid'] %}nosuid{% endif %}
+      loop: "{{ ansible_mounts }}"
+      loop_control:
+        label: "{{ filesystem.mount }}"
+        loop_var: filesystem
+      when:
+        - tmp_systemd is undefined
+        - item.mount == "/tmp"
+      notify: remount
+
+    - name: Use systemd unit files to apply options
+      ansible.builtin.template:
+        src: etc/tmp_mount.j2
+        dest: /etc/systemd/system/tmp.mount
+        owner: root
+        group: root
+        mode: 0644
+      notify: systemd_remount
+      when:
+        - tmp_systemd is defined
