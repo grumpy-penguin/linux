@@ -7,3 +7,44 @@
   ansible.builtin.package:
     state: present
     name: azure-cli
+  register: azcli_return
+
+- name: Configure the AZ CLI client
+  block:
+    - name: Configure AZ CLI to disable auto-update
+      ansible.builtin.command: az config set --defaults auto-upgrade.enable=false
+
+    - name: Configure AZ CLI to disable auto-update of extentions
+      ansible.builtin.command: az config set --defaults auto-upgrade.all=fasle
+
+    - name: Configure AZ CLI to disable confirm prompt
+      ansible.builtin.command: az config set --defaults disable_confirm_prompt=true
+
+    - name: Configure AZ CLI to disable telemetry collection
+      ansible.builtin.command: az config set --defaults collect_telemetry=false
+
+    - name: Configure AZ CLI to only show errors
+      ansible.builtin.command: az config set --defaults only_show_errors=true
+
+    - name: Configure AZ CLI to install extensions if its needed
+      ansible.builtin.command: az config set --defaults use_dynamic_install=yes_without_prompt
+
+    - name: Configure AZ CLI to continue after extensions have been dynamically installed
+      ansible.builtin.command: az config set --defaults run_after_dynamic_install=true
+
+  when: azclie_return.changed
+
+- name: Install AZ CLI extensions
+  ansible.builtin.command: "az extension add --name {{ azextention }} "
+  loop_control:
+    loop_var: azextention
+  loop: az_cli_extensions
+  when: az_cli_extensions is defined and az_cli_extensions|length > 0
+
+- name: Install AZ CLI additonal tooling
+  ansible.builtin.command: "az {{ aztooling }} install"
+  loop_control:
+    loop_var: aztooling
+  loop: az_cli_tooling
+  when: az_cli_tooling is defined and az_cli_tooling|length > 0
+
